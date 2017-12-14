@@ -43,7 +43,8 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
        echo 'America/Vancouver' > /etc/timezone && \
 
 ### S6 Installation
-       curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / && \
+       case $(uname -m) in x86*) ARCH=amd64 ;; armv*) ARCH=armhf ;; esac;  \
+       curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.gz | tar xfz - -C / && \
    
 ### Add Folders
        mkdir -p /assets/cron
