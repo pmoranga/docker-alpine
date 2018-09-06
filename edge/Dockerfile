@@ -2,14 +2,19 @@ FROM alpine:edge
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
-    ARG S6_OVERLAY_VERSION=v1.21.2.1 
+    ARG S6_OVERLAY_VERSION=v1.21.4.0 
     ENV DEBUG_MODE=FALSE \
         ENABLE_CRON=TRUE \
         ENABLE_SMTP=TRUE \
         ENABLE_ZABBIX=TRUE
 
+### Add Zabbix User First
+    RUN set -x && \
+        addgroup -g 10050 zabbix && \
+        adduser -S -D -H -h /dev/null -s /sbin/nologin -G zabbix -u 10050 zabbix ;\
+
 ### Install MailHog
-    RUN apk --no-cache add --virtual mailhog-build-dependencies \
+        apk --no-cache add --virtual mailhog-build-dependencies \
                 go \
                 git \
                 musl-dev \
@@ -22,25 +27,29 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
        mv /usr/src/gocode/bin/mhsendmail /usr/local/bin && \
        rm -rf /usr/src/gocode && \
        apk del --purge mailhog-build-dependencies && \
-       adduser -D -u 1025 mailhog && \
+       adduser -S -D -H -h /dev/null -u 1025 mailhog && \
 
 ### Add Core Utils
        apk --no-cache upgrade && \
        apk --no-cache add \
             bash \
             curl \
+            grep \
             less \
             logrotate \
             msmtp \
             nano \
+            sudo \
             tzdata \
             vim \
             zabbix-agent \
+            zabbix-utils \
             && \
        rm -rf /var/cache/apk/* && \
        rm -rf /etc/logrotate.d/acpid && \
-       cp -R /usr/share/zoneinfo/America/Vancouver /etc/localtime && \
-       echo 'America/Vancouver' > /etc/timezone && \
+       cp -R /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+       echo 'Etc/UTC' > /etc/timezone && \
+       echo '%zabbix ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
 
 ### S6 Installation
        case $(uname -m) in x86*) ARCH=amd64 ;; armv*) ARCH=armhf ;; esac;  \

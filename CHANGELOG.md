@@ -1,3 +1,69 @@
+## 3.5 2018-08-16 <dave at tiredofit dot ca>
+
+* Switch Default Timezone to Etc/UTC for public image
+
+## 3.4 2018-07-02 <dave at tiredofit dot ca>
+
+* Revert back to using && \ instead of ; \ in Dockerfile
+* Add ENABLE_GMAIL_SMTP environment variable thanks to @joeyberkovitz
+
+## 3.3 2018-04-22 <dave at tiredofit dot ca>
+
+* Update 01-permissions to quiet down if no UIDs changed.
+* Refinements to MailHog, to always route through msmtp
+
+## 3.2 2018-04-15 <dave at tiredofit dot ca>
+
+* Update Zabbix UID/GID
+
+## 3.1 2018-03-25 <dave at tiredofit dot ca>
+
+* Update MailHog Test Server Startup
+
+## 3.0 2018-03-14 <lesliesit at outlook dot com>
+
+* Add 01-permissions script to support change uid & gid and add user to group:
+* USER_<USERNAME>=<aNewNumber>
+* GROUP_<GROUPNAME>=<aNewNumber>
+* GROUP_ADD_<USERNAME>=<aGroupName>
+* UID & GID in /etc/passwd & /etc/group will be modified.
+* Old 01- 02- 03- scripts renamed after the new 01-permissions as 02- 03- 04-
+
+## 2.18 2017-02-15 <dave at tiredofit dot ca>
+
+* Update File Permissions for logrotate.d
+
+## 2.17 2017-02-01 <dave at tiredofit dot ca>
+
+* Init Scripts Update
+* msmtp Update
+
+## 2.16 2017-01-29 <dave at tiredofit dot ca>
+
+* More Permissions Fixes
+
+## 2.15 2017-01-29 <dave at tiredofit dot ca>
+
+* Add Grep, sudo
+* Fix Permissions
+
+## 2.14 2017-01-29 <dave at tiredofit dot ca>
+
+* Add Container Package Check
+
+## 2.13 2017-01-28 <dave at tiredofit dot ca>
+
+* Add zabbix-utils to edge
+* Update S6 Overlay to 1.21.2.2
+
+## 2.12 2017-01-28 <dave at tiredofit dot ca>
+
+* Add Zabbix Check for Updated Packages
+
+## 2.11 2017-12-24 <dave at tiredofit dot ca>
+
+* Check for custom cron files in /assets/cron-custom/ on startup
+
 ## 2.10 2017-12-01 <dave at tiredofit dot ca>
 
 * Update S6 overlay to 1.21.2.1

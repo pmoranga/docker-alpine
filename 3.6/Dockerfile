@@ -8,17 +8,16 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
         ENABLE_ZABBIX=TRUE
 
 ### Set Defaults/Arguments
-    ARG S6_OVERLAY_VERSION=v1.21.2.1 
+    ARG S6_OVERLAY_VERSION=v1.21.4.0 
     ARG MAJOR_VERSION=3.4
-    ARG ZBX_VERSION=${MAJOR_VERSION}.1
+    ARG ZBX_VERSION=${MAJOR_VERSION}.9
     ARG ZBX_SOURCES=svn://svn.zabbix.com/tags/${ZBX_VERSION}/
 
 ### Zabbix Pre Installation steps
-    RUN addgroup zabbix && \
-        adduser -S \
-                -D -G zabbix \
-                -h /var/lib/zabbix/ \
-            zabbix && \
+    RUN set -x && \
+        addgroup -g 10050 zabbix && \
+        adduser -S -D -H -h /dev/null -s /sbin/nologin -G zabbix -u 10050 zabbix ;\
+
         mkdir -p /etc/zabbix && \
         mkdir -p /etc/zabbix/zabbix_agentd.d && \
         mkdir -p /var/lib/zabbix && \
@@ -85,24 +84,27 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
        mv /usr/src/gocode/bin/mhsendmail /usr/local/bin && \
        rm -rf /usr/src/gocode && \
        apk del --purge mailhog-build-dependencies && \
-       adduser -D -u 1025 mailhog && \
+       adduser -S -D -H -h /dev/null -u 1025 mailhog && \
 
 ### Add Core Utils
        apk upgrade && \
        apk add \
             bash \
             curl \
+            grep \
             less \
             logrotate \
             msmtp \
             nano \
+            sudo \
             tzdata \
             vim \
             && \
        rm -rf /var/cache/apk/* && \
        rm -rf /etc/logrotate.d/acpid && \
-       cp -R /usr/share/zoneinfo/America/Vancouver /etc/localtime && \
-       echo 'America/Vancouver' > /etc/timezone && \
+       cp -R /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+       echo 'Etc/UTC' > /etc/timezone && \
+       echo '%zabbix ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
 
 ### S6 Installation
        curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / && \
